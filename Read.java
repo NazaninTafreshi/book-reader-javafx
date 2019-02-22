@@ -5,26 +5,17 @@
  */
 package bookapp;
 
-import bookapp.BookSearchResult;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Predicate;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.concurrent.ExecutionException;
 import javafx.concurrent.Task;
-import javax.swing.JOptionPane;
-import javax.swing.SwingWorker;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import static jdk.nashorn.internal.runtime.Context.printStackTrace;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
@@ -34,9 +25,14 @@ import org.w3c.dom.NodeList;
 public class Read extends Task<BookSearchResult> {
 
     private final BookSearchResult book;
+    
 
     Read(BookSearchResult book) {
         this.book = book;
+    }
+
+    public BookSearchResult getBook() {
+        return book;
     }
 
     @Override
@@ -100,17 +96,21 @@ public class Read extends Task<BookSearchResult> {
     protected void succeeded() {
         try {
             BookSearchResult results = this.get();
-            System.out.println("ptrResults = " + results);
-            System.out.println("ptrResults = " + results.getDescription());
-            System.out.println("results = " + results.getCover());
-//            int showConfirmDialog = JOptionPane.showConfirmDialog(GUI.GUI, "Do you mean " + ptrResults.get(1) + " by " + ptrResults.get(2));
-//            if (showConfirmDialog == JOptionPane.OK_OPTION) {
-//                System.out.println("Ok");
-//                GUI.GUI.setResult(ptrResults);
-//            }
+            //System.out.println("ptrResults = " + results);
+            System.out.println("description = " + results.getDescription());
+            //FXMLBookController.GUI.setResult(book);
+            FXMLBookController.GUI.setResult(book);
+            
+            System.out.println("description2 = " + book.getDescription());
+            System.out.println("cover = " + results.getCover());
+            System.out.println("title = " + results.getTitle());
+            System.out.println("author = " + results.getAuthorName());
+            System.out.println("pages = " + results.getNum_pages());
+            System.out.println("pub year = " + results.getPublication_year());
 
-        } catch (Exception ex) {
-            System.out.println("Read Done Get Exception" + ex.getMessage());
+
+        } catch (InterruptedException | ExecutionException ex) {
+            System.out.println("Read Done Get Exception " + ex.getMessage());
         }
     }
 
